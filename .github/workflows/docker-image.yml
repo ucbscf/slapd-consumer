@@ -20,4 +20,4 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ucbscf/slapd-consumer:$(date +%s)
     - name: Docker Push
-      run: docker push ucbscf/slapd-consumer:$(date +%s)
+      run: docker push ucbscf/slapd-consumer
