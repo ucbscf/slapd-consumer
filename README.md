@@ -1,1 +1,1 @@
-Unified slapd-consumer container for scf and eml
+slapd-consumer container
