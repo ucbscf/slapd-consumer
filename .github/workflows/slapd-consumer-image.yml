@@ -17,7 +17,9 @@ jobs:
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: Add SHORT_SHA env property with commit short sha
+      run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ucbscf/slapd-consumer
+      run: docker build . --file Dockerfile --tag ucbscf/slapd-consumer:${SHORT_SHA}
     - name: Docker Push
-      run: docker push ucbscf/slapd-consumer
+      run: docker push ucbscf/slapd-consumer:${SHORT_SHA}
