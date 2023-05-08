@@ -1,13 +1,9 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # Install
 RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get -y install ca-certificates ssl-cert rsyslog
-
-# Add debconf-set-selections items
-#ADD debconf.txt /root/debconf.txt
-#RUN cat /root/debconf.txt | /usr/bin/debconf-set-selections
 
 RUN export LC_ALL=C DEBIAN_FRONTEND=noninteractive && \
 	apt-get update && \
