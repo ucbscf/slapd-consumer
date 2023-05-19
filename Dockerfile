@@ -17,15 +17,10 @@ RUN chown -R openldap:openldap /etc/ldap/
 RUN chmod -R 640 /etc/ldap/
 RUN chmod -R ug+X /etc/ldap/
 
-#ADD ./etc/ssl/certs/* /etc/ssl/certs/
-#ADD ./etc/ssl/private/* /etc/ssl/private/
-#RUN chgrp -R ssl-cert /etc/ssl/private
-#RUN chmod 440 /etc/ssl/private/*
-
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 
-CMD /usr/sbin/slapd -h "ldap:/// ldapi:///" \
+CMD /usr/sbin/slapd -h "ldap:/// ldapi:/// ldaps:///" \
 	-u openldap -g openldap \
 	-f /etc/ldap/SITE-slapd.conf \
 	-d sync 2>&1
