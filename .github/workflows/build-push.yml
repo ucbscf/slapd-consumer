@@ -31,4 +31,5 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          tags: ${{ github.repository }}:${{ steps.short_sha.outputs.short_sha }}
+          push: true
+          tags: ${{ github.repository }}:${{ steps.short_sha.outputs.SHORT_SHA }}
