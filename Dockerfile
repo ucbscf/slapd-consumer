@@ -1,26 +1,28 @@
 FROM ubuntu:24.04
 
-# Install
-RUN apt-get update && \
-    apt-get -y upgrade && \
-    apt-get -y install ca-certificates ssl-cert rsyslog
+ENV DEBIAN_PRIORITY=high
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN export LC_ALL=C DEBIAN_FRONTEND=noninteractive && \
-	apt-get update && \
-	apt-get install -y slapd ldap-utils
+RUN groupadd -r -g 509 ssl-cert
+RUN groupadd -r -g 389 openldap && \
+    useradd -r -u 389 -g 389 -d /var/lib/ldap -s /bin/false openldap
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+        ca-certificates \
+        ssl-cert \
+        rsyslog \
+        slapd \
+        ldap-utils
+
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN usermod -G ssl-cert openldap
 
-# Add configuration files and schemas
+EXPOSE 389 636
 
-RUN chown -R openldap:openldap /etc/ldap/
-RUN chmod -R 640 /etc/ldap/
-RUN chmod -R ug+X /etc/ldap/
-
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/*
-
-CMD /usr/sbin/slapd -h "ldap:/// ldapi:/// ldaps:///" \
-	-u openldap -g openldap \
-	-f /etc/ldap/SITE-slapd.conf \
-	-d sync 2>&1
+CMD ["/usr/sbin/slapd", "-h", "ldap:/// ldaps:/// ldapi:///", \
+     "-u", "openldap", "-g", "openldap", \
+     "-f", "/etc/ldap/SITE-slapd.conf", "-d", "sync"]
